@@ -158,6 +158,7 @@ class RunCommand extends Command
                     $formatter = array_get($columnData, 'formatter.name');
                     $formatterData = array_get($columnData, 'formatter');
                     $providerClassName = array_get($columnData, 'provider', false);
+                    $byPassRow = array_get($columnData, 'bypass_row', false);
 
                     if (!$formatter) {
                         $formatter = $formatterData;
@@ -180,6 +181,9 @@ class RunCommand extends Command
                         } elseif(array_get($columnData, 'optional', false)) {
                             $updates[$columnName] = $fakerInstance->optional()->{$formatter}(...$options);
                         } else {
+                            if ($byPassRow === true) {
+                                $options[] = $row;
+                            }
                             $updates[$columnName] = $fakerInstance->{$formatter}(...$options);
                         }
                     } catch (\InvalidArgumentException $e) {
